@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Project xmlns="http://NamespaceTest.com/Project" 
+xsi:schemaLocation="http://NamespaceTest.com/Project issue.xsd" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <IssueList>
+        <Issue id="1">
+            <name>VeryVazhnayaZadacha</name>
+            <description>VeryVazhnoeOpisanie</description>
+            <created_at>2002-05-30T09:00:00</created_at>
+            <start_at>2002-05-30T09:00:00</start_at>
+            <due_date>2002-05-30T09:00:00</due_date>
+            <assigned_to>
+                <name>Роман</name>
+                <lastname>Куппе</lastname>
+                <middlename>Олегович</middlename>
+                <email>kuppe@mail.ru</email>
+                <admin>false</admin>
+            </assigned_to>
+            <author>
+                <name>Иван</name>
+                <lastname>Спирин</lastname>
+                <middlename>Вячеславочив</middlename>
+                <email>example@mail.ru</email>
+                <admin>false</admin>
+            </author>
+            <status>
+                <name>В работе</name>
+            </status>
+            <SrsBlock>
+                <Title>
+                    <Value>Блок для разработки 1</Value>
+                    <Property>
+                        <Parameter>bold</Parameter>
+                        <Value>1</Value>
+                    </Property>
+                </Title>
+                <Content>
+                    <Value>Большой контен</Value>
+                    <Property>
+                        <Parameter>size</Parameter>
+                        <Value>16</Value>
+                    </Property>
+                </Content>
+            </SrsBlock>
+            <priority>10</priority>
+            <parent>1</parent>
+        </Issue>
+        <Issue id="2">
+            <name>VeryVazhnayaZadacha2</name>
+            <description>VeryVazhnoeOpisanie2</description>
+            <created_at>2002-05-30T09:00:00</created_at>
+            <start_at>2002-05-30T09:00:00</start_at>
+            <due_date>2002-05-30T09:00:00</due_date>
+            <assigned_to>
+                <name>Роман</name>
+                <lastname>Куппе</lastname>
+                <middlename>Олегович</middlename>
+                <email>kuppe@mail.ru</email>
+                <admin>false</admin>
+            </assigned_to>
+            <author>
+                <name>Иван</name>
+                <lastname>Спирин</lastname>
+                <middlename>Вячеславочив</middlename>
+                <email>example@mail.ru</email>
+                <admin>false</admin>
+            </author>
+            <status>
+                <name>В работе</name>
+            </status>
+            <SrsBlock>
+                <Title>
+                    <Value>Блок для разработки 1</Value>
+                    <Property>
+                        <Parameter>bold</Parameter>
+                        <Value>1</Value>
+                    </Property>
+                </Title>
+                <Content>
+                    <Value>Контент поменьше</Value>
+                    <Property>
+                        <Parameter>size</Parameter>
+                        <Value>16</Value>
+                    </Property>
+                </Content>
+            </SrsBlock>
+            <priority>9</priority>
+            <parent>1</parent>
+        </Issue>
+    </IssueList>
+</Project>
