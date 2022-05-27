@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:pj="http://NamespaceTest.com/Project"
+           targetNamespace="http://NamespaceTest.com/Project"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+    <xs:element name="Project">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="IssueList" type="pj:IssueList" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="IssueList">
+        <xs:sequence>
+            <xs:element name="Issue" type="pj:Issue" minOccurs="1" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Issue">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="description" type="xs:string" />
+            <xs:element name="created_at" type="xs:dateTime" />
+            <xs:element name="start_at" type="xs:dateTime" />
+            <xs:element name="due_date" type="xs:dateTime" />
+            <xs:element name="assigned_to" type="pj:User" />
+            <xs:element name="author" type="pj:User" />
+            <xs:element name="status" type="pj:Status" />
+            <xs:element name="SrsBlock" type="pj:SrsBlock" />
+            <xs:element name="priority" type="xs:string" />
+            <xs:element name="parent" type="xs:int" />
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:unsignedInt" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="Tracker">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="position" type="xs:integer" />
+            <xs:element name="description" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Status">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="User">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" />
+            <xs:element name="lastname" type="xs:string" />
+            <xs:element name="middlename" type="xs:string" />
+            <xs:element name="email" type="xs:string" />
+            <xs:element name="admin" type="xs:boolean" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Srs">
+        <xs:sequence>
+            <xs:element name="Name" type="xs:string"/>
+            <xs:element name="User" type="pj:User"/>
+            <xs:element name="SrsBlock" type="pj:SrsBlock"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SrsBlock">
+        <xs:sequence>
+            <xs:element name="Title" type="pj:Title"/>
+            <xs:element name="Content" type="pj:Content"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Title">
+        <xs:sequence>
+            <xs:element name="Value" type="xs:string"/>
+            <xs:sequence>
+                <xs:element name="Property" type="pj:Property"/>
+            </xs:sequence>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Content">
+        <xs:sequence>
+            <xs:element name="Value" type="xs:string"/>
+            <xs:element name="Property" type="pj:Property" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Property">
+        <xs:sequence>
+            <xs:element name="Parameter" type="xs:string"/>
+            <xs:element name="Value" type="xs:decimal"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
