@@ -1,4 +1,4 @@
 public class Property {
-    String Parameter;
-    int Value;
+    String parameter;
+    int value;
 }

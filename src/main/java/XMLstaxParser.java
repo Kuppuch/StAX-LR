@@ -71,6 +71,8 @@ public class XMLstaxParser {
                         issue.assigned_to = parseAssigned(reader);
                     } else if (startElement.getName().getLocalPart().equals("author")) {
                         issue.author = parseAssigned(reader);
+                    } else if (startElement.getName().getLocalPart().equals("SrsBlock")) {
+                        issue.srsBlock = parseSrsBlock(reader);
                     }
                 }
                 // если цикл дошел до закрывающего элемента Issue,
@@ -131,4 +133,99 @@ public class XMLstaxParser {
         }
         return user;
     }
+
+    public static SrsBlock parseSrsBlock(XMLEventReader reader) throws XMLStreamException {
+        SrsBlock srsBlock = new SrsBlock();
+        StartElement assignedToElem = null;
+        int cntEnds = 0;
+        while (true) {
+            XMLEvent xmlEvent = reader.nextEvent();
+            if (xmlEvent.getEventType() != 1) {
+                if (xmlEvent.isEndElement()) {
+                    EndElement endElement = xmlEvent.asEndElement();
+                    if (endElement.getName().getLocalPart().equals("SrsBlock")) {
+                        break;
+                    }
+                }
+                continue;
+            }
+            assignedToElem = xmlEvent.asStartElement();
+            switch (xmlEvent.getEventType()) {
+                case 1:
+                    if (assignedToElem.getName().getLocalPart().equals("Title")) {
+                        srsBlock.title = parseSrsBlockElem(reader);
+                    } else if (assignedToElem.getName().getLocalPart().equals("Content")) {
+                        srsBlock.content = parseSrsBlockElem(reader);
+                    }
+                    break;
+                default:
+                    continue;
+            }
+        }
+        return srsBlock;
+    }
+
+    public static SrsBlockElem parseSrsBlockElem(XMLEventReader reader) throws XMLStreamException {
+        SrsBlockElem srsBlockElem = new SrsBlockElem();
+        StartElement srsBlockElemXml = null;
+        while (true) {
+            XMLEvent xmlEvent = reader.nextEvent();
+            if (xmlEvent.getEventType() != 1) {
+                if (xmlEvent.isEndElement()) {
+                    EndElement endElement = xmlEvent.asEndElement();
+                    if (endElement.getName().getLocalPart().equals("Title") || endElement.getName().getLocalPart().equals("Content")) {
+                            break;
+                    }
+                }
+                continue;
+            }
+            srsBlockElemXml = xmlEvent.asStartElement();
+            switch (xmlEvent.getEventType()) {
+                case 1:
+                    if (srsBlockElemXml.getName().getLocalPart().equals("Value")) {
+                        xmlEvent = reader.nextEvent();
+                        srsBlockElem.value = xmlEvent.asCharacters().getData();
+                    } else if (srsBlockElemXml.getName().getLocalPart().equals("Property")) {
+                        srsBlockElem.property = parseProperty(reader);
+                    }
+                    break;
+                default:
+                    continue;
+            }
+        }
+        return srsBlockElem;
+    }
+
+    public static Property parseProperty (XMLEventReader reader) throws XMLStreamException {
+        Property property = new Property();
+        StartElement srsBlockElemXml = null;
+        while (true) {
+            XMLEvent xmlEvent = reader.nextEvent();
+            if (xmlEvent.getEventType() != 1) {
+                if (xmlEvent.isEndElement()) {
+                    EndElement endElement = xmlEvent.asEndElement();
+                    if (endElement.getName().getLocalPart().equals("Property")) {
+                        break;
+                    }
+                }
+                continue;
+            }
+            srsBlockElemXml = xmlEvent.asStartElement();
+            switch (xmlEvent.getEventType()) {
+                case 1:
+                    if (srsBlockElemXml.getName().getLocalPart().equals("Value")) {
+                        xmlEvent = reader.nextEvent();
+                        property.value = Integer.parseInt(xmlEvent.asCharacters().getData());
+                    } else if (srsBlockElemXml.getName().getLocalPart().equals("Parameter")) {
+                        xmlEvent = reader.nextEvent();
+                        property.parameter = xmlEvent.asCharacters().getData();
+                    }
+                    break;
+                default:
+                    continue;
+            }
+        }
+        return property;
+    }
+
 }

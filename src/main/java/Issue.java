@@ -9,7 +9,7 @@ public class Issue {
     User assigned_to;
     User author;
     String status;
-    SrsBlock SrsBlock;
+    public SrsBlock srsBlock;
     int priority;
     int parent;
     int id;
