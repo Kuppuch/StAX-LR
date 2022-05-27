@@ -6,9 +6,9 @@ public class Issue {
     Date created_at;
     Date start_at;
     Date due_date;
-    AssignedTo assigned_to;
-    Author author;
-    Status status;
+    User assigned_to;
+    User author;
+    String status;
     SrsBlock SrsBlock;
     int priority;
     int parent;

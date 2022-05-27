@@ -1,5 +1,4 @@
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -24,9 +23,7 @@ public class XMLstaxParser {
     public static List<Issue> parseXMLFile(File file) {
         List<Issue> issuesList = new ArrayList<>();
         Issue issue = null;
-        AssignedTo assignedTo = null;
-        Author author = null;
-        Status status = null;
+        User user = null;
         SrsBlock srsBlock = null;
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
@@ -61,6 +58,9 @@ public class XMLstaxParser {
                     } else if (startElement.getName().getLocalPart().equals("due_date")) {
                         xmlEvent = reader.nextEvent();
                         issue.due_date = formatter.parse(xmlEvent.asCharacters().getData());
+                    } else if (startElement.getName().getLocalPart().equals("status")) {
+                        xmlEvent = reader.nextEvent();
+                        issue.status = xmlEvent.asCharacters().getData();
                     } else if (startElement.getName().getLocalPart().equals("priority")) {
                         xmlEvent = reader.nextEvent();
                         issue.priority = Integer.parseInt(xmlEvent.asCharacters().getData());
@@ -68,33 +68,9 @@ public class XMLstaxParser {
                         xmlEvent = reader.nextEvent();
                         issue.parent = Integer.parseInt(xmlEvent.asCharacters().getData());
                     } else if (startElement.getName().getLocalPart().equals("assigned_to")) {
-                        assignedTo = new AssignedTo();
-                        StartElement assignedToElem = startElement;
-                        while (true) {
-                            xmlEvent = reader.nextEvent();
-                            xmlEvent = reader.nextEvent();
-                            xmlEvent = reader.nextEvent();
-                            xmlEvent = reader.nextEvent();
-                            System.out.println(xmlEvent.asCharacters().getData());
-                            xmlEvent = reader.nextEvent();
-                            System.out.println(xmlEvent.asCharacters().getData());
-                            if (startElement.isStartElement()) {
-                                break;
-                            }
-                        }
-                        if (startElement.getName().getLocalPart().equals("name")) {
-                            System.out.println(xmlEvent.asCharacters().getData());
-                        }
-//                        StartElement assignedElem = xmlEvent.asStartElement();
-//                        if (startElement.getName().getLocalPart().equals("assigned_to")) {
-//                            assignedTo = new AssignedTo();
-//                            // Получаем атрибут id для каждого элемента Issue
-//                            if (assignedElem.getName().getLocalPart().equals("name")) {
-//                                xmlEvent = reader.nextEvent();
-//                                assignedTo.name = (xmlEvent.asCharacters().getData());
-//                                System.out.println(assignedTo.name);
-//                            }
-//                        }
+                        issue.assigned_to = parseAssigned(reader);
+                    } else if (startElement.getName().getLocalPart().equals("author")) {
+                        issue.author = parseAssigned(reader);
                     }
                 }
                 // если цикл дошел до закрывающего элемента Issue,
@@ -113,5 +89,46 @@ public class XMLstaxParser {
             throw new RuntimeException(e);
         }
         return issuesList;
+    }
+
+    public static User parseAssigned(XMLEventReader reader) throws XMLStreamException {
+        User user = new User();
+        StartElement assignedToElem = null;
+        while (true) {
+            XMLEvent xmlEvent = reader.nextEvent();
+            if (xmlEvent.getEventType() != 1) {
+                if (xmlEvent.isEndElement()) {
+                    EndElement endElement = xmlEvent.asEndElement();
+                    if (endElement.getName().getLocalPart().equals("assigned_to") || endElement.getName().getLocalPart().equals("author")) {
+                        break;
+                    }
+                }
+                continue;
+            }
+            assignedToElem = xmlEvent.asStartElement();
+            switch (xmlEvent.getEventType()) {
+                case 1:
+                    if (assignedToElem.getName().getLocalPart().equals("name")) {
+                        xmlEvent = reader.nextEvent();
+                        user.name = xmlEvent.asCharacters().getData();
+                    } else if (assignedToElem.getName().getLocalPart().equals("lastname")) {
+                        xmlEvent = reader.nextEvent();
+                        user.lastname = xmlEvent.asCharacters().getData();
+                    } else if (assignedToElem.getName().getLocalPart().equals("middlename")) {
+                        xmlEvent = reader.nextEvent();
+                        user.middlename = xmlEvent.asCharacters().getData();
+                    } else if (assignedToElem.getName().getLocalPart().equals("email")) {
+                        xmlEvent = reader.nextEvent();
+                        user.email = xmlEvent.asCharacters().getData();
+                    } else if (assignedToElem.getName().getLocalPart().equals("admin")) {
+                        xmlEvent = reader.nextEvent();
+                        user.admin = Boolean.parseBoolean(xmlEvent.asCharacters().getData());
+                    }
+                    break;
+                default:
+                    continue;
+            }
+        }
+        return user;
     }
 }

@@ -23,9 +23,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <email>example@mail.ru</email>
                 <admin>false</admin>
             </author>
-            <status>
-                <name>В работе</name>
-            </status>
+            <status>В работе</status>
             <SrsBlock>
                 <Title>
                     <Value>Блок для разработки 1</Value>
@@ -65,9 +63,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <email>example@mail.ru</email>
                 <admin>false</admin>
             </author>
-            <status>
-                <name>В работе</name>
-            </status>
+            <status>В работе</status>
             <SrsBlock>
                 <Title>
                     <Value>Блок для разработки 1</Value>
