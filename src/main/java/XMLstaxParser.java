@@ -20,12 +20,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class XMLstaxParser {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws TransformerConfigurationException, IOException, SAXException {
         File file = new File(Objects.requireNonNull(XMLstaxParser.class.getClassLoader().getResource("example.xml")).getFile());
         List<Issue> issueList = parseXMLFile(file);
         for (Issue issue: issueList) {
             System.out.println(issue.id);
         }
+        htmlGen(issueList);
     }
 
     public static List<Issue> parseXMLFile(File file) {
@@ -224,9 +225,9 @@ public class XMLstaxParser {
         return property;
     }
 
-    public static void htmlGen() throws IOException, SAXException, TransformerConfigurationException {
+    public static void htmlGen(List<Issue> issueList) throws IOException, SAXException, TransformerConfigurationException {
         String encoding = "UTF-8";
-        FileOutputStream fos = new FileOutputStream("myfile.html");
+        FileOutputStream fos = new FileOutputStream("C:\\Users\\Roman\\IdeaProjects\\StAX-LR\\src\\main\\resources\\myfile.html");
         OutputStreamWriter writer = new OutputStreamWriter(fos, encoding);
         StreamResult streamResult = new StreamResult(writer);
 
@@ -246,18 +247,75 @@ public class XMLstaxParser {
         tHandler.startDocument();
         tHandler.startElement("", "", "html", new AttributesImpl());
         tHandler.startElement("", "", "head", new AttributesImpl());
+        tHandler.startElement("", "", "link rel=\"stylesheet\" href=\"mysite.css\"", new AttributesImpl());
         tHandler.startElement("", "", "title", new AttributesImpl());
-        tHandler.characters("Hello".toCharArray(), 0, 5);
+        tHandler.characters("Issue".toCharArray(), 0, 5);
+        tHandler.endElement("", "", "title");
+        tHandler.startElement("", "", "title", new AttributesImpl());
+        tHandler.characters("Issue".toCharArray(), 0, 5);
         tHandler.endElement("", "", "title");
         tHandler.endElement("", "", "head");
         tHandler.startElement("", "", "body", new AttributesImpl());
         tHandler.startElement("", "", "p", new AttributesImpl());
-        tHandler.characters("5 > 3".toCharArray(), 0, 5); // note '>' character
+        for (Issue i: issueList) {
+            tHandler.characters(i.name.toCharArray(), 0, i.name.length());
+            tHandler.characters(i.status.toCharArray(), 0, i.status.length());
+            tHandler.characters(i.assigned_to.name.toCharArray(), 0, i.assigned_to.name.length());
+            tHandler.characters(i.assigned_to.lastname.toCharArray(), 0, i.assigned_to.lastname.length());
+            tHandler.startElement("", "", "br", new AttributesImpl());
+        }
         tHandler.endElement("", "", "p");
+
+        tHandler.startElement("", "", "table", new AttributesImpl());
+                //Название задачи
+                tHandler.startElement("", "", "td", new AttributesImpl());
+                    tHandler.characters("Название задачи".toCharArray(), 0, 15);
+                tHandler.endElement("", "", "td");
+                //Статус
+                tHandler.startElement("", "", "td", new AttributesImpl());
+                    tHandler.characters("Статус".toCharArray(), 0, 6);
+                tHandler.endElement("", "", "td");
+                //Исполнитель
+                tHandler.startElement("", "", "td", new AttributesImpl());
+                    tHandler.characters("Исполнитель".toCharArray(), 0, 11);
+                tHandler.endElement("", "", "td");
+
+        for (Issue i: issueList) {
+            tHandler.startElement("", "", "tr", new AttributesImpl());
+            //Название задачи
+            tHandler.startElement("", "", "td", new AttributesImpl());
+            tHandler.characters(i.name.toCharArray(), 0, i.name.length());
+            tHandler.endElement("", "", "td");
+            //Статус
+            tHandler.startElement("", "", "td", new AttributesImpl());
+            tHandler.characters(i.status.toCharArray(), 0, i.status.length());
+            tHandler.endElement("", "", "td");
+            //Исполнитель
+            tHandler.startElement("", "", "td", new AttributesImpl());
+            String fullName = i.assigned_to.name + " " + i.assigned_to.lastname;
+            tHandler.characters(fullName.toCharArray(), 0, fullName.length());
+            tHandler.endElement("", "", "td");
+            tHandler.endElement("", "", "tr");
+        }
+        tHandler.startElement("", "", "tr", new AttributesImpl());
+        tHandler.startElement("", "", "th", new AttributesImpl());
+        tHandler.endElement("", "", "th");
+        tHandler.startElement("", "", "td", new AttributesImpl());
+        tHandler.characters("Всего задач".toCharArray(), 0, 11);
+        tHandler.endElement("", "", "td");
+        tHandler.startElement("", "", "td", new AttributesImpl());
+        tHandler.characters(Integer.toString(issueList.size()).toCharArray(), 0, Integer.toString(issueList.size()).length());
+        tHandler.endElement("", "", "td");
+        tHandler.endElement("", "", "tr");
+
+        tHandler.endElement("", "", "table");
+
         tHandler.endElement("", "", "body");
         tHandler.endElement("", "", "html");
         tHandler.endDocument();
         writer.close();
+
+        fos.close();
     }
 
 }
