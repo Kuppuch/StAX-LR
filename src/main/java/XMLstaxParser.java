@@ -2,10 +2,12 @@
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.*;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -13,20 +15,45 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class XMLstaxParser {
-    public static void main(String[] args) throws TransformerConfigurationException, IOException, SAXException {
-        File file = new File(Objects.requireNonNull(XMLstaxParser.class.getClassLoader().getResource("example.xml")).getFile());
-        List<Issue> issueList = parseXMLFile(file);
-        for (Issue issue: issueList) {
-            System.out.println(issue.id);
+    public static void main(String[] args) throws TransformerConfigurationException, IOException, SAXException, XMLStreamException {
+        boolean ok = schemaValidator();
+        if (ok) {
+            File file = new File(Objects.requireNonNull(XMLstaxParser.class.getClassLoader().getResource("example.xml")).getFile());
+            List<Issue> issueList = parseXMLFile(file);
+            for (Issue issue: issueList) {
+                System.out.println(issue.id);
+            }
+            htmlGen(issueList);
         }
-        htmlGen(issueList);
+    }
+
+    public static boolean schemaValidator() throws SAXException, IOException, XMLStreamException {
+        try {
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = factory.newSchema(new File(".\\src\\main\\resources\\issue.xsd"));
+            Validator validator = schema.newValidator();
+            XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(Files.newInputStream(Paths.get(".\\src\\main\\resources\\example.xml")));
+            validator.validate(new StAXSource(reader));
+
+            System.out.println("XML is valid");
+            return true;
+        } catch (Exception e) {
+            System.out.println("XML is not valid");
+            return false;
+        }
     }
 
     public static List<Issue> parseXMLFile(File file) {
@@ -228,7 +255,8 @@ public class XMLstaxParser {
     public static void htmlGen(List<Issue> issueList) throws IOException, SAXException, TransformerConfigurationException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         String encoding = "UTF-8";
-        FileOutputStream fos = new FileOutputStream("C:\\Users\\Roman\\IdeaProjects\\StAX-LR\\src\\main\\resources\\myfile.html");
+        File file = new File(Objects.requireNonNull(XMLstaxParser.class.getClassLoader().getResource("example.xml")).getFile());
+        FileOutputStream fos = new FileOutputStream(".\\myfile.html");
         OutputStreamWriter writer = new OutputStreamWriter(fos, encoding);
         StreamResult streamResult = new StreamResult(writer);
 

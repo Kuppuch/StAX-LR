@@ -3,7 +3,7 @@
 xsi:schemaLocation="http://NamespaceTest.com/Project issue.xsd" 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <IssueList>
-        <Issue id="1">
+        <Issue>
             <name>VeryVazhnayaZadacha</name>
             <description>VeryVazhnoeOpisanie</description>
             <created_at>2002-05-15T09:00:00</created_at>
