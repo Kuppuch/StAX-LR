@@ -226,6 +226,7 @@ public class XMLstaxParser {
     }
 
     public static void htmlGen(List<Issue> issueList) throws IOException, SAXException, TransformerConfigurationException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         String encoding = "UTF-8";
         FileOutputStream fos = new FileOutputStream("C:\\Users\\Roman\\IdeaProjects\\StAX-LR\\src\\main\\resources\\myfile.html");
         OutputStreamWriter writer = new OutputStreamWriter(fos, encoding);
@@ -279,6 +280,23 @@ public class XMLstaxParser {
                 tHandler.startElement("", "", "td", new AttributesImpl());
                     tHandler.characters("Исполнитель".toCharArray(), 0, 11);
                 tHandler.endElement("", "", "td");
+        //Дата начала
+        tHandler.startElement("", "", "td", new AttributesImpl());
+        tHandler.characters("Дата начала".toCharArray(), 0, 11);
+        tHandler.endElement("", "", "td");
+        //Дата завершения
+        tHandler.startElement("", "", "td", new AttributesImpl());
+        tHandler.characters("Дата завершения".toCharArray(), 0, "Дата завершения".length());
+        tHandler.endElement("", "", "td");
+        //Количество дней на исполнение
+        tHandler.startElement("", "", "td", new AttributesImpl());
+        tHandler.characters("Количество дней на исполнение".toCharArray(), 0, "Количество дней на исполнение".length());
+        tHandler.endElement("", "", "td");
+        //Приоритетность
+        tHandler.startElement("", "", "td", new AttributesImpl());
+        tHandler.characters("Приоритетность".toCharArray(), 0, "Приоритетность".length());
+        tHandler.endElement("", "", "td");
+
 
         for (Issue i: issueList) {
             tHandler.startElement("", "", "tr", new AttributesImpl());
@@ -295,6 +313,24 @@ public class XMLstaxParser {
             String fullName = i.assigned_to.name + " " + i.assigned_to.lastname;
             tHandler.characters(fullName.toCharArray(), 0, fullName.length());
             tHandler.endElement("", "", "td");
+
+
+            tHandler.startElement("", "", "td", new AttributesImpl());
+            tHandler.characters(formatter.format(i.created_at).toCharArray(), 0, formatter.format(i.created_at).length());
+            tHandler.endElement("", "", "td");
+
+            tHandler.startElement("", "", "td", new AttributesImpl());
+            tHandler.characters(formatter.format(i.due_date).toCharArray(), 0, formatter.format(i.due_date).length());
+            tHandler.endElement("", "", "td");
+
+            tHandler.startElement("", "", "td", new AttributesImpl());
+            tHandler.characters(Long.toString((i.due_date.getTime()-i.created_at.getTime())/ (24 * 60 * 60 * 1000)).toCharArray(), 0, Long.toString((i.due_date.getTime()-i.created_at.getTime())/ (24 * 60 * 60 * 1000)).length());
+            tHandler.endElement("", "", "td");
+
+            tHandler.startElement("", "", "td", new AttributesImpl());
+            tHandler.characters(Integer.toString(i.priority).toCharArray(), 0, Integer.toString(i.priority).length());
+            tHandler.endElement("", "", "td");
+
             tHandler.endElement("", "", "tr");
         }
         tHandler.startElement("", "", "tr", new AttributesImpl());
